@@ -1,6 +1,6 @@
 const Excel = require("exceljs");
+const fs = require("fs/promises");
 
-const filePath = `${__dirname}/My_Data/My_TEST_Copy.xlsx`;
 const toBeCopy = "About_Me_Dtls1";
 
 const copiedVersion = "Copied_Version";
@@ -11,6 +11,13 @@ const copiedVersion = "Copied_Version";
  */
 
 (async () => {
+  const files = await fs.readdir(`${__dirname}/My_Data`);
+  if (!files) {
+    throw new Error("No file found");
+  }
+
+  const filePath = `${__dirname}/My_Data/${files[0]}`;
+
   /**
    * create the work book instance for target
    */
