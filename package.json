@@ -1,7 +1,8 @@
 {
-  "name": "nodejsExcel",
+  "name": "Find_Issues",
   "version": "1.0.0",
-  "description": "",
+  "bin": "index.js",
+  "description": "Create copy version",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

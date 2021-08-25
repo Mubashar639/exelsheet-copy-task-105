@@ -1,22 +1,35 @@
 const Excel = require("exceljs");
-const fs = require("fs/promises");
+const fs = require("fs");
+const path = require("path");
 
 const toBeCopy = "About_Me_Dtls1";
 
 const copiedVersion = "Copied_Version";
 
+// Using a function to set default app path
+function getDir() {
+  if (process.pkg) {
+    return path.resolve(process.execPath + "/..");
+  } else {
+    return path.join(require.main ? require.main.path : process.cwd());
+  }
+}
+
+const currentDir = getDir();
 /**
  *return void 
  just console the the notification message file has been changed 
  */
 
 (async () => {
-  const files = await fs.readdir(`${__dirname}/My_Data`);
+  const files = fs.readdirSync(`${currentDir}/My_Data`);
   if (!files) {
+    console.log(err);
     throw new Error("No file found");
   }
+  console.log(files);
 
-  const filePath = `${__dirname}/My_Data/${files[0]}`;
+  const filePath = `${currentDir}/My_Data/${files[0]}`;
 
   /**
    * create the work book instance for target
@@ -61,7 +74,9 @@ const copiedVersion = "Copied_Version";
     if (rowNumber > 500) return;
     const targetRow = targetWorksheet.getRow(rowNumber);
     row.eachCell({ includeEmpty: false }, (cell, cellNumber) => {
-      targetRow.getCell(cellNumber).value = cell.value;
+      targetRow.getCell(cellNumber).value = cell.value?.result
+        ? cell.value?.result
+        : cell.value;
       targetRow.getCell(cellNumber).style = cell.style;
     });
     row.commit();
@@ -74,4 +89,5 @@ const copiedVersion = "Copied_Version";
   console.log(
     `file sheet has been copied from ${toBeCopy} sheet to ${copiedVersion} on path ${filePath}`
   );
+  // });
 })();
