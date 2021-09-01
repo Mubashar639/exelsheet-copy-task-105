@@ -1,11 +1,14 @@
 const Excel = require("exceljs");
 const fs = require("fs");
 const path = require("path");
+const XLSX = require("xlsx");
 
-const toBeCopy = "About_Me_Dtls1";
+// const toBeCopy = "About_Me_Dtls1";
 
-const copiedVersion = "Copied_Version";
+// const copiedVersion = "Copied_Version";
 
+const toBeCopy = "EX-DATA_CHECKS2";
+const copiedVersion = "EX-DATA_ISSUES";
 // Using a function to set default app path
 function getDir() {
   if (process.pkg) {
@@ -22,15 +25,18 @@ const currentDir = getDir();
  */
 
 (async () => {
-  const files = fs.readdirSync(`${currentDir}/My_Data`);
+  let files = fs.readdirSync(`${currentDir}/My_Data`);
   if (!files) {
     console.log(err);
     throw new Error("No file found");
   }
-  console.log(files);
+  files = files?.filter((value) => !value.startsWith(".~"));
+  let filePath = `${currentDir}/My_Data/${files[0]}`;
+  // let SavedFilePath = `${currentDir}/My_Data/${files[0]}`;
 
-  const filePath = `${currentDir}/My_Data/${files[0]}`;
-
+  // if (filePath.indexOf(".xlsm") !== -1) {
+  //   foundXLSM = true;
+  // }
   /**
    * create the work book instance for target
    */
@@ -74,16 +80,15 @@ const currentDir = getDir();
     if (rowNumber > 500) return;
     const targetRow = targetWorksheet.getRow(rowNumber);
     row.eachCell({ includeEmpty: false }, (cell, cellNumber) => {
-      targetRow.getCell(cellNumber).value = cell.value?.result
-        ? cell.value?.result
-        : cell.value;
-      targetRow.getCell(cellNumber).style = cell.style;
+      targetRow.getCell(cellNumber).value = "asdfasd";
+      // targetRow.getCell(cellNumber).value = cell.value?.result
+      //   ? cell.value?.result
+      //   : cell.value;
+      // targetRow.getCell(cellNumber).style = cell.style;
     });
     row.commit();
   });
-  /**
-   * write into file
-   */
+
   await targetWorkbook.xlsx.writeFile(filePath);
 
   console.log(
@@ -91,3 +96,19 @@ const currentDir = getDir();
   );
   // });
 })();
+
+// if (foundXLSM) {
+//   original_file.Sheets[copiedVersion] =
+//     XLSX.readFile(filePath).Sheets[copiedVersion];
+//   fs.unlinkSync(filePath);
+//   XLSX.writeFile(original_file, SavedFilePath, { bookVBA: true });
+// }
+
+/**
+ * write into file
+ */
+// let original_file = "";
+// if (foundXLSM) {
+//   original_file = XLSX.readFile(filePath, { bookVBA: true });
+//   filePath = filePath.replace(".xlsm", ".xlsx");
+// }
